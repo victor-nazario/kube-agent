@@ -1,0 +1,14 @@
+{
+  "cluster-owner": {
+    "can_read": ["cluster"],
+    "can_write": ["cluster"],
+    "can_delete": ["cluster"]
+  },
+  "cluster-writer": {
+    "can_read": ["cluster"],
+    "can_write": ["cluster"]
+  },
+  "cluster-reader": {
+    "can_read": ["cluster"]
+  }
+}

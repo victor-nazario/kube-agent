@@ -66,5 +66,4 @@ func TestAuthenticationHandler(t *testing.T) {
 			}
 		})
 	}
-
 }
