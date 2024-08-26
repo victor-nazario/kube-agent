@@ -19,6 +19,7 @@ type Agent struct {
 	client client.Client
 }
 
+// NewAgent returns a configured agent type, along with its initialized client
 func NewAgent() (Agent, error) {
 	mg, err := manager.New(config.GetConfigOrDie(), manager.Options{})
 	if err != nil {
@@ -31,6 +32,7 @@ func NewAgent() (Agent, error) {
 	return agent, nil
 }
 
+// Deploy receives job information and behaves like a K8s Controller deploying a job using the v1.batch api
 func (a *Agent) Deploy(ctx context.Context, jobName, image, cmd, nameSpace string, backOffLimit int32) (string, error) {
 	jobSpec := &batchv1.Job{
 		ObjectMeta: metav1.ObjectMeta{

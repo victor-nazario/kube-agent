@@ -16,13 +16,6 @@ import (
 
 const defaultPort = "8080"
 
-func logRequest(handler http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Printf("%s %s %s %s\n", r.RemoteAddr, r.Method, r.URL, r.UserAgent())
-		handler.ServeHTTP(w, r)
-	})
-}
-
 func main() {
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -49,5 +42,5 @@ func main() {
 
 	router.Handle("/query", srv)
 
-	log.Fatal(http.ListenAndServe(":"+port, logRequest(router)))
+	log.Fatal(http.ListenAndServe(":"+port, router))
 }
