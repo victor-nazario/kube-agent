@@ -14,7 +14,7 @@ type Roles map[string]Actions
 func LoadRoles() (Roles, error) {
 	var roles Roles
 
-	f, err := os.Open("roles.json")
+	f, err := os.Open("/Users/victor/GolandProjects/kube-agent/internal/authz/roles.json")
 	if err != nil {
 		return nil, err
 	}

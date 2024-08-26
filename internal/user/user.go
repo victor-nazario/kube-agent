@@ -11,7 +11,7 @@ type User struct {
 type Users map[string]User
 
 // ActiveUsers returns a list of all active users along with their current assigned roles
-func ActiveUsers() (Users, error) {
+func ActiveUsers() Users {
 	users := make(map[string]User)
 
 	users["operant"] = User{
@@ -24,5 +24,5 @@ func ActiveUsers() (Users, error) {
 		Roles:    []string{"cluster-reader"},
 	}
 
-	return users, nil
+	return users
 }

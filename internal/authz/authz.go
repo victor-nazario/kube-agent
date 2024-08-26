@@ -1,6 +1,7 @@
 package authz
 
 import (
+	"github.com/victor-nazario/kube-agent/internal/auth"
 	"github.com/victor-nazario/kube-agent/internal/user"
 	"log"
 	"net/http"
@@ -51,17 +52,23 @@ func (a authorizer) HasPermission(userName, action, resource string) bool {
 }
 
 func Middleware(a Authorizer) func(http.Handler) http.Handler {
-	return func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			username, _, ok := r.BasicAuth()
-			action := ActionFromMethod(r)
-			if !ok || !a.HasPermission(username, action, defaultResource) {
-				log.Printf("User '%s' is denied '%s' on resource '%s'", username, action, defaultResource)
-				w.WriteHeader(http.StatusForbidden)
+	return func(handler http.Handler) http.Handler {
+		return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+
+			if !auth.IsUserAuthenticated(request.Context()) {
+				writer.WriteHeader(http.StatusUnauthorized)
 				return
 			}
 
-			next.ServeHTTP(w, r)
+			username, _, ok := request.BasicAuth()
+			action := ActionFromMethod(request)
+			if !ok || !a.HasPermission(username, action, defaultResource) {
+				log.Printf("User '%s' is denied '%s' on resource '%s'", username, action, defaultResource)
+				writer.WriteHeader(http.StatusForbidden)
+				return
+			}
+
+			handler.ServeHTTP(writer, request)
 		})
 	}
 }

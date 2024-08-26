@@ -1,6 +1,7 @@
 package authz
 
 import (
+	"context"
 	"encoding/base64"
 	"fmt"
 	"github.com/victor-nazario/kube-agent/internal/user"
@@ -43,6 +44,8 @@ func TestAuthenticationHandler(t *testing.T) {
 				t.Fatal(err)
 			}
 
+			req.SetBasicAuth(tt.user, tt.pass)
+
 			authFmt := fmt.Sprintf("%s:%s", tt.user, tt.pass)
 			req.Header.Set("Authorization", fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte(authFmt))))
 
@@ -53,6 +56,8 @@ func TestAuthenticationHandler(t *testing.T) {
 				}
 				w.WriteHeader(http.StatusOK)
 			}
+
+			req = req.WithContext(context.WithValue(req.Context(), "auth", true))
 
 			handler(http.HandlerFunc(mockHandlerAuth)).ServeHTTP(rr, req)
 
