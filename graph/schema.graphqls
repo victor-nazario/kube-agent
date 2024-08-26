@@ -7,5 +7,5 @@ input DeployJobInput {
 }
 
 type Mutation {
-  deployJob(input: DeployJobInput!): ID
+  DeployJob(input: DeployJobInput!): ID!
 }

@@ -7,5 +7,5 @@ import "github.com/victor-nazario/kube-agent/internal/agent"
 // It serves as dependency injection for your app, add any dependencies you require here.
 
 type Resolver struct {
-	agent agent.Agent
+	Agent agent.Agent
 }

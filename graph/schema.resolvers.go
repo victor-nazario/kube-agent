@@ -11,8 +11,8 @@ import (
 )
 
 // DeployJob is the resolver for the deployJob field.
-func (r *mutationResolver) DeployJob(ctx context.Context, input model.DeployJobInput) (*string, error) {
-	return r.agent.Deploy(ctx, input.Name, input.Image, input.Command, input.NameSpace, int32(input.BackOffLimit))
+func (r *mutationResolver) DeployJob(ctx context.Context, input model.DeployJobInput) (string, error) {
+	return r.Agent.Deploy(ctx, input.Name, input.Image, input.Command, input.NameSpace, int32(input.BackOffLimit))
 }
 
 // Mutation returns MutationResolver implementation.
