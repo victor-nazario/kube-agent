@@ -1,0 +1,11 @@
+input DeployJobInput {
+  name: String!
+  nameSpace: String!
+  image: String!
+  command: String!
+  backOffLimit: Int!
+}
+
+type Mutation {
+  deployJob(input: DeployJobInput!): ID
+}
