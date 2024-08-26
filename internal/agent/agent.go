@@ -12,7 +12,7 @@ import (
 )
 
 type Deployer interface {
-	Deploy(ctx context.Context, jobName, image, cmd, nameSpace string, backOffLimit int32) error
+	Deploy(ctx context.Context, jobName, image, cmd, nameSpace string, backOffLimit int32) (*string, error)
 }
 
 type Agent struct {
@@ -31,7 +31,7 @@ func NewAgent() (Agent, error) {
 	return agent, nil
 }
 
-func (a *Agent) Deploy(ctx context.Context, jobName, image, cmd, nameSpace string, backOffLimit int32) error {
+func (a *Agent) Deploy(ctx context.Context, jobName, image, cmd, nameSpace string, backOffLimit int32) (*string, error) {
 	jobSpec := &batchv1.Job{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      jobName,
@@ -53,5 +53,13 @@ func (a *Agent) Deploy(ctx context.Context, jobName, image, cmd, nameSpace strin
 			BackoffLimit: &backOffLimit,
 		},
 	}
-	return a.client.Create(ctx, jobSpec)
+
+	err := a.client.Create(ctx, jobSpec)
+	if err != nil {
+		return nil, err
+	}
+
+	idStr := string(jobSpec.GetUID())
+
+	return &idStr, nil
 }
