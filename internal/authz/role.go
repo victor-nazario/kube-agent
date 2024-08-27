@@ -1,9 +1,13 @@
 package authz
 
 import (
+	"bytes"
+	"embed"
 	"encoding/json"
-	"os"
 )
+
+//go:embed roles.json
+var embedFS embed.FS
 
 type Resources []string
 
@@ -14,13 +18,12 @@ type Roles map[string]Actions
 func LoadRoles() (Roles, error) {
 	var roles Roles
 
-	f, err := os.Open("/Users/victor/GolandProjects/kube-agent/internal/authz/roles.json")
+	r, err := embedFS.ReadFile("roles.json")
 	if err != nil {
 		return nil, err
 	}
-	defer f.Close()
 
-	err = json.NewDecoder(f).Decode(&roles)
+	err = json.NewDecoder(bytes.NewReader(r)).Decode(&roles)
 	if err != nil {
 		return nil, err
 	}
