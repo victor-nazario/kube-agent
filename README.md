@@ -14,6 +14,9 @@ client.
 
 ## Architecture
 
+![agent-arch](https://github.com/user-attachments/assets/588ee7ec-b7ca-443a-a5a4-a7b8b7eef228)
+
+
 [Agent] - The agent is two components embedded into one. Firstly, we provide a graphql server as an entry-point
 to Controllers seeking to schedule and deploy Kubernetes jobs. Secondly, it provides a Kubernetes Controller which
 leverages the existing V1 APIs to create the resources needed and manage their lifecycle. 
