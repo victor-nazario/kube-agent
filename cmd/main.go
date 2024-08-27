@@ -38,7 +38,7 @@ func main() {
 
 	router := chi.NewRouter()
 	router.Use(auth.Authentication())
-	router.Use(authz.Middleware(authorizer))
+	router.Use(authz.HasPermissions(authorizer))
 
 	router.Handle("/query", srv)
 

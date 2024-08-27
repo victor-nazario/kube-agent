@@ -51,7 +51,7 @@ func (a authorizer) HasPermission(userName, action, resource string) bool {
 	return false
 }
 
-func Middleware(a Authorizer) func(http.Handler) http.Handler {
+func HasPermissions(a Authorizer) func(http.Handler) http.Handler {
 	return func(handler http.Handler) http.Handler {
 		return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 

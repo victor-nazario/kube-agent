@@ -30,6 +30,9 @@ func Authentication() func(http.Handler) http.Handler {
 			} else {
 				ctx = context.WithValue(request.Context(), "auth", true)
 			}
+
+			// we set the context with the value here, this later gets used in RBAC to first make sure the user
+			// is authenticated
 			request = request.WithContext(ctx)
 			handler.ServeHTTP(writer, request)
 		})

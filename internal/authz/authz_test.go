@@ -22,7 +22,7 @@ func TestAuthenticationHandler(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	handler := Middleware(a)
+	handler := HasPermissions(a)
 
 	var authenticationTests = []struct {
 		code int
