@@ -1,6 +1,6 @@
 input DeployJobInput {
   name: String!
-  nameSpace: String!
+  namespace: String!
   image: String!
   command: String!
   backOffLimit: Int!

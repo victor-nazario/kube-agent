@@ -2246,7 +2246,7 @@ func (ec *executionContext) unmarshalInputDeployJobInput(ctx context.Context, ob
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"name", "nameSpace", "image", "command", "backOffLimit"}
+	fieldsInOrder := [...]string{"name", "namespace", "image", "command", "backOffLimit"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -2260,13 +2260,13 @@ func (ec *executionContext) unmarshalInputDeployJobInput(ctx context.Context, ob
 				return it, err
 			}
 			it.Name = data
-		case "nameSpace":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("nameSpace"))
+		case "namespace":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("namespace"))
 			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.NameSpace = data
+			it.Namespace = data
 		case "image":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("image"))
 			data, err := ec.unmarshalNString2string(ctx, v)

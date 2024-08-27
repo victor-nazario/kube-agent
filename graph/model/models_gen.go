@@ -4,7 +4,7 @@ package model
 
 type DeployJobInput struct {
 	Name         string `json:"name"`
-	NameSpace    string `json:"nameSpace"`
+	Namespace    string `json:"namespace"`
 	Image        string `json:"image"`
 	Command      string `json:"command"`
 	BackOffLimit int    `json:"backOffLimit"`
