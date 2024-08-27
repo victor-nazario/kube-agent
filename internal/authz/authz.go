@@ -51,6 +51,7 @@ func (a authorizer) HasPermission(userName, action, resource string) bool {
 	return false
 }
 
+// HasPermissions is a middleware handler that implements the RBAC policies enforced for the application
 func HasPermissions(a Authorizer) func(http.Handler) http.Handler {
 	return func(handler http.Handler) http.Handler {
 		return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
@@ -73,6 +74,7 @@ func HasPermissions(a Authorizer) func(http.Handler) http.Handler {
 	}
 }
 
+// ActionFromMethod switches the request http verb or method and assigns the required action according to RBAC
 func ActionFromMethod(r *http.Request) string {
 	switch r.Method {
 	case http.MethodGet:

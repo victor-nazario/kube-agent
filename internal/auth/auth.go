@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	// In a real world app we would use hashing, salt and pepper to store user and password information.
+	// In a real world app we would use hashing, salt and pepper to store user and password information in an external store.
 	user     = "operant"
 	password = "secret"
 )
