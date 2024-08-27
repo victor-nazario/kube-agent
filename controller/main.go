@@ -8,6 +8,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -16,6 +17,35 @@ const defaultApiUrl = "http://127.0.0.1:8080/query"
 type GraphQLRequest struct {
 	Query     string                 `json:"query"`
 	Variables map[string]interface{} `json:"variables,omitempty"`
+}
+
+type GraphQLResponse struct {
+	Errors []struct {
+		Message string   `json:"message"`
+		Path    []string `json:"path"`
+	} `json:"errors"`
+	Data struct {
+		DeployJob string `json:"DeployJob"`
+	} `json:"data"`
+}
+
+func (g GraphQLResponse) String() string {
+	if len(g.Errors) != 0 {
+		sb := strings.Builder{}
+		defer sb.Reset()
+
+		for _, e := range g.Errors {
+			sb.WriteString(fmt.Sprintf("Error in mutation %s: %s\n", e.Path, e.Message))
+
+			// here we are not fortunate enough to have typed errors, best we can do is find the suffix -- this is not ideal
+			if strings.HasSuffix(e.Message, "already exists") {
+				sb.WriteString("HINT: Provide a different name in --jobName\n")
+			}
+		}
+		return sb.String()
+	} else {
+		return fmt.Sprintf("Success!\nResource ID: %s", g.Data.DeployJob)
+	}
 }
 
 type DeployJobInput struct {
@@ -27,9 +57,11 @@ type DeployJobInput struct {
 }
 
 func main() {
+
+	// this is just some ASCII art to customize the program execution
 	fmt.Println("\n┏┓             ┏┓         ┓┓    \n┃┃┏┓┏┓┏┓┏┓┏┓╋  ┃ ┏┓┏┓╋┏┓┏┓┃┃┏┓┏┓\n┗┛┣┛┗ ┛ ┗┻┛┗┗  ┗┛┗┛┛┗┗┛ ┗┛┗┗┗ ┛ \n  ┛                             ")
 
-	user := flag.String("u", "operant", "user name")
+	user := flag.String("u", "operant", "username")
 	password := flag.String("p", "secret", "password")
 	jobName := flag.String("jobname", "test-job-1", "Name of the Kubernetes job to create")
 	namespace := flag.String("namespace", "kube-system", "Namespace where the job should be created")
@@ -56,12 +88,14 @@ func main() {
 		}
 	}(res.Body)
 
-	body, err := io.ReadAll(res.Body)
+	var graphQLResponse GraphQLResponse
+	err = json.NewDecoder(res.Body).Decode(&graphQLResponse)
+	//body, err := io.ReadAll(res.Body)
 	if err != nil {
 		log.Fatalf("Error reading response body: %v", err)
 	}
 
-	fmt.Printf("\n%s", string(body))
+	fmt.Printf("\n%s", graphQLResponse)
 }
 
 // buildMutationReader receives the relevant parameters and builds an io.Reader of the mutation and its arguments
