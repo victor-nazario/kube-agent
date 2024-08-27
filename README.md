@@ -1,6 +1,6 @@
 # kube-agent
 
-## Building and Running the Application
+## Building, Running and Deploying the Applications
 The recommended way to build and run this application is using [Docker](https://www.docker.com/), this application
 provides a ``Dockerfile`` with all the instructions needed to build a working image of the application and its
 dependencies.
@@ -9,8 +9,35 @@ On a machine with Docker installed, cd into the application root and execute ``d
 this command will produce a working image of the application, depending on your network connection it will
 take some time. After this command executes, you can create a container with the image in detached mode
 issuing the following command ``docker run -d -p 8080:8080 agent``. Once this command executes, the user can
-visit [http://localhost:8080/graphql](http://localhost:8080/graphql) on their machine and interact with the GraphiQL
+visit [http://localhost:8080/query](http://localhost:8080/query) on their machine and interact with the GraphiQL
 client.
+
+Once the image is built, please execute the following command (this assumes the user has installed Minikube) 
+```eval $(minikube docker-env --unset)```, this will allow us to use the local image rather than try to pull from 
+a remote registry. 
+
+Assuming the user is at the project's root, please execute the following command to create the service-account for 
+the system, this allows us to define roles and improve security by using the least privilege possible. 
+```kubectl apply -f deploy/service-account.yaml```
+
+Now, we need to create the deployment and service to access our application (this is merged into one file).
+```kubectl apply -f deploy/deployment.yaml```
+
+The resources should have been created successfully, this means that we now have routing from outside the cluster to the 
+application. One way to obtain the specific node-ip and port where we can reach it:
+```minikube service kube-agent-entrypoint --url -n operant```
+
+Now, we can build the Operant Controller CLI. Assuming the user is at the controller directory, execute the following:
+```go build -o ./out/kube-agent .```
+
+Provide run permissions to the binary
+```chmod +x ./out/kube-agent```
+
+With the Agent running and correctly exposed to outside the cluster, you can issue commands with the
+recently built binary as such:
+
+```./out/controller --u=operant --p=secret --jobname=nazario-test --image=ubuntu:latest --command=ls --backoff=0 --url={$YOUR_IP:PORT}/query --namespace=operant```
+
 
 ## Architecture
 
@@ -44,4 +71,12 @@ The designed system provides resilience and reliability by exposing itself via a
 The deployment definition would require 3 pods to be present, depending on load. Whilst out of the scope of the project,
 a production level implementation could consider (if required by the use case) an HPA policy. This provides
 scaling on demand, whilst also reducing the costs associated with the deployment, both economical and in terms of resources.
+
+# Testing
+This application provides a test suite that validates and tests the most critical parts of the system,
+tests can be executed with the ```go test``` command.
+
+# Copyright Notice
+Copyright 2024 Victor Nazario.
+
 

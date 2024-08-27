@@ -44,7 +44,7 @@ func (g GraphQLResponse) String() string {
 		}
 		return sb.String()
 	} else {
-		return fmt.Sprintf("Success!\nResource ID: %s", g.Data.DeployJob)
+		return fmt.Sprintf("Success!\nResource ID: %s\n", g.Data.DeployJob)
 	}
 }
 
