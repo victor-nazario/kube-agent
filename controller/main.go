@@ -91,7 +91,6 @@ func main() {
 
 	var graphQLResponse GraphQLResponse
 	err = json.NewDecoder(res.Body).Decode(&graphQLResponse)
-	//body, err := io.ReadAll(res.Body)
 	if err != nil {
 		log.Fatalf("Error reading response body: %v", err)
 	}
