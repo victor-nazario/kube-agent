@@ -63,8 +63,9 @@ func main() {
 
 	user := flag.String("u", "operant", "username")
 	password := flag.String("p", "secret", "password")
+	url := flag.String("url", defaultApiUrl, "api url")
 	jobName := flag.String("jobname", "test-job-1", "Name of the Kubernetes job to create")
-	namespace := flag.String("namespace", "kube-system", "Namespace where the job should be created")
+	namespace := flag.String("namespace", "operant", "Namespace where the job should be created")
 	containerImage := flag.String("image", "ubuntu:latest", "Name of the container image")
 	entryCommand := flag.String("command", "ls", "Command to run inside the container")
 	backOffLimit := flag.Int("backoff", 0, "Backoff limit for the job")
@@ -79,7 +80,7 @@ func main() {
 		log.Fatalf("Error marshaling request: %v", err)
 	}
 
-	res, err := performGraphRequest(rea, *user, *password)
+	res, err := performGraphRequest(rea, *user, *password, *url)
 
 	defer func(Body io.ReadCloser) {
 		closeErr := Body.Close()
@@ -125,8 +126,8 @@ func buildMutationReader(jobName, namespace, image, cmd string, limit int) (io.R
 }
 
 // performGraphRequest receives the request body and login credentials to produce an HTTP request with a 10
-func performGraphRequest(reader io.Reader, u, p string) (*http.Response, error) {
-	req, err := http.NewRequest(http.MethodPost, defaultApiUrl, reader)
+func performGraphRequest(reader io.Reader, u, p, url string) (*http.Response, error) {
+	req, err := http.NewRequest(http.MethodPost, url, reader)
 	if err != nil {
 		log.Fatalf("Error building job creation request: %v", err)
 	}
