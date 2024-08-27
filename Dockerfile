@@ -29,4 +29,5 @@ ENV PORT 8080
 EXPOSE 8080
 
 # Run the binary program produced by `go install`
+RUN chmod +x ./out/kube-agent
 CMD ["./out/kube-agent"]

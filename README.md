@@ -15,7 +15,9 @@ client.
 ## Architecture
 
 [Agent] - The agent is two components embedded into one. Firstly, we provide a graphql server as an entry-point
-to Controllers seeking to schedule and deploy Kubernetes jobs. Secondly, it provides a Kubernetes Controller which
+to Controllers seeking to schedule and deploy Kubernetes jobs. This means, we have significant
+flexibility into what a Controller can be, it can even be graphical. In our case, we have decided to implement 
+it as a CLI application. Secondly, it provides a Kubernetes Controller which
 leverages the existing V1 APIs to create the resources needed and manage their lifecycle. 
 
 [Controller] - The Controller (not to be confused with a Kubernetes Controller) is a CLI client application
@@ -31,6 +33,8 @@ performed outside the system, such as one done by a GraphQL Gateway like Apollo.
 * Role Based Access Control (RBAC): In a production system, roles are essential to establishing clear boundaries between 
 user access to resources. This application provides roles and actions along with a handler that acts as a middleware to
 validate the current action is accessible to the given user.
+* Limited role access with Kubernetes Service Accounts: This application implements the least amount of privilege possible,
+we use a custom service account spec which gives enough permissions to create the kubernetes job, but not to operate over other resources.
 
 # Reliability
 The designed system provides resilience and reliability by exposing itself via a service to be managed by a cluster ingress.
